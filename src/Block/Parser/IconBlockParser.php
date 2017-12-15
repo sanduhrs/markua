@@ -30,13 +30,14 @@ class IconBlockParser extends AbstractBlockParser
      */
     public function parse(ContextInterface $context, Cursor $cursor)
     {
-        if (!in_array($cursor->getFirstNonSpaceCharacter(), IconBlock::getIconBlockTypes()) || $cursor->getCharacter($cursor->getFirstNonSpacePosition() + 1) !== '>') {
+        if (!in_array($cursor->getNextNonSpaceCharacter(), IconBlock::getIconBlockTypes()) ||
+            $cursor->getCharacter($cursor->getNextNonSpacePosition() + 1) !== '>') {
             return false;
         }
 
-        $type = $cursor->getFirstNonSpaceCharacter();
+        $type = $cursor->getNextNonSpaceCharacter();
         
-        $cursor->advanceToFirstNonSpace();
+        $cursor->advanceToNextNonSpaceOrNewline();
         if ($cursor->peek() === '>') {
             $cursor->advanceBy(2);
             if ($cursor->getCharacter() === ' ') {

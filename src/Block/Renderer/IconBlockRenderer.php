@@ -18,19 +18,19 @@ namespace League\Markua\Block\Renderer;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;
 use League\CommonMark\HtmlElement;
-use League\CommonMark\HtmlRenderer;
+use League\CommonMark\ElementRendererInterface;
 use League\Markua\Block\Element\IconBlock;
 
 class IconBlockRenderer extends AsideRenderer implements BlockRendererInterface
 {
     /**
-     * @param IconBlock $block
-     * @param HtmlRenderer $htmlRenderer
+     * @param AbstractBlock $block
+     * @param ElementRendererInterface $htmlRenderer
      * @param bool $inTightList
      *
      * @return HtmlElement
      */
-    public function render(AbstractBlock $block, HtmlRenderer $htmlRenderer, $inTightList = false)
+    public function render(AbstractBlock $block, ElementRendererInterface $htmlRenderer, $inTightList = false)
     {
         if (!($block instanceof IconBlock)) {
             throw new \InvalidArgumentException('Incompatible block type: ' . get_class($block));

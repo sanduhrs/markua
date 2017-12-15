@@ -45,11 +45,30 @@ class IconBlock extends Aside
         $types = array_flip(static::getIconBlockTypes());
         return $types[$this->getType()];
     }
-    
+
+    /**
+     * @return array
+     */
+    public static function getIconBlockTypes()
+    {
+        return array(
+            'discussion' => 'D',
+            'error' => 'E',
+            'info' => 'I',
+            'question' => 'Q',
+            'tip' => 'T',
+            'warning' => 'W',
+            'exercise' => 'X'
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function matchesNextLine(Cursor $cursor)
     {
-        if ($cursor->getIndent() <= 3 && in_array($cursor->getFirstNonSpaceCharacter(), static::getIconBlockTypes())) {
-            $cursor->advanceToFirstNonSpace();
+        if ($cursor->getIndent() <= 3 && in_array($cursor->getNextNonSpaceCharacter(), static::getIconBlockTypes())) {
+            $cursor->advanceToNextNonSpaceOrNewline();
             if ($cursor->peek() === '>') {
                 $cursor->advanceBy(2);
                 if ($cursor->getCharacter() === ' ') {
@@ -60,17 +79,5 @@ class IconBlock extends Aside
         }
 
         return false;
-    }
-
-    public static function getIconBlockTypes() {
-        return array(
-            'discussion' => 'D',
-            'error' => 'E',
-            'info' => 'I',
-            'question' => 'Q',
-            'tip' => 'T',
-            'warning' => 'W',
-            'exercise' => 'X'
-        );
     }
 }

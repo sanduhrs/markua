@@ -18,33 +18,39 @@ namespace League\Markua\Block\Renderer;
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Renderer\BlockRendererInterface;
 use League\CommonMark\HtmlElement;
-use League\CommonMark\HtmlRenderer;
+use League\CommonMark\ElementRendererInterface;
+use League\CommonMark\Util\Xml;
 use League\Markua\Block\Element\Aside;
 
 class AsideRenderer implements BlockRendererInterface
 {
     /**
-     * @param Aside $block
-     * @param HtmlRenderer $htmlRenderer
-     * @param bool $inTightList
+     * @param Aside                    $block
+     * @param ElementRendererInterface $htmlRenderer
+     * @param bool                     $inTightList
      *
      * @return HtmlElement
      */
-    public function render(AbstractBlock $block, HtmlRenderer $htmlRenderer, $inTightList = false)
+    public function render(AbstractBlock $block, ElementRendererInterface $htmlRenderer, $inTightList = false)
     {
         if (!($block instanceof Aside)) {
             throw new \InvalidArgumentException('Incompatible block type: ' . get_class($block));
         }
 
-        $filling = $htmlRenderer->renderBlocks($block->getChildren());
+        $attrs = [];
+        foreach ($block->getData('attributes', []) as $key => $value) {
+            $attrs[$key] = Xml::escape($value, true);
+        }
+
+        $filling = $htmlRenderer->renderBlocks($block->children());
         if ($filling === '') {
-            return new HtmlElement('aside', array(), $htmlRenderer->getOption('innerSeparator'));
+            return new HtmlElement('aside', $attrs, $htmlRenderer->getOption('inner_separator', "\n"));
         }
 
         return new HtmlElement(
             'aside',
-            array(),
-            $htmlRenderer->getOption('innerSeparator') . $filling . $htmlRenderer->getOption('innerSeparator')
+            $attrs,
+            $htmlRenderer->getOption('inner_separator', "\n") . $filling . $htmlRenderer->getOption('inner_separator', "\n")
         );
     }
 }

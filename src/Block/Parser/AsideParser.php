@@ -30,11 +30,12 @@ class AsideParser extends AbstractBlockParser
      */
     public function parse(ContextInterface $context, Cursor $cursor)
     {
-        if ($cursor->getFirstNonSpaceCharacter() !== 'A' || $cursor->getCharacter($cursor->getFirstNonSpacePosition() + 1) !== '>') {
+        if ($cursor->getNextNonSpaceCharacter() !== 'A' ||
+            $cursor->getCharacter($cursor->getNextNonSpacePosition() + 1) !== '>') {
             return false;
         }
 
-        $cursor->advanceToFirstNonSpace();
+        $cursor->advanceToNextNonSpaceOrNewline();
         if ($cursor->peek() === '>') {
             $cursor->advanceBy(2);
             if ($cursor->getCharacter() === ' ') {

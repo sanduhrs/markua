@@ -26,14 +26,14 @@ use League\Markua\Extension\MarkuaExtension;
 class MarkuaConverter extends CommonMarkConverter
 {
     /**
-     * Create a new markua converter instance.
+     * {@inheritdoc}
      */
-    public function __construct()
+    public function __construct(array $config = [], Environment $environment = null)
     {
-        $environment = new Environment();
+        if ($environment === null) {
+            $environment = Environment::createCommonMarkEnvironment();
+        }
         $environment->addExtension(new MarkuaExtension());
-        
-        $this->docParser = new DocParser($environment);
-        $this->htmlRenderer = new HtmlRenderer($environment);
+        parent::__construct($config, $environment);
     }
 }

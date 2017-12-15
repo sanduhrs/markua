@@ -4,10 +4,15 @@ namespace League\Markua\Extension;
 use League\CommonMark\Block\Parser as BlockParser;
 use League\CommonMark\Extension\CommonMarkCoreExtension;
 use League\Markua\Block\Parser as MarkuaBlockParser;
-use League\Markua\Block\Renderer as MarkuaBlockRenderer;
+use League\Markua\Block\Renderer\AsideRenderer;
+use League\Markua\Block\Renderer\IconBlockRenderer;
 
-class MarkuaExtension extends CommonMarkCoreExtension {
+class MarkuaExtension extends CommonMarkCoreExtension
+{
 
+    /**
+     * {@inheritdoc}
+     */
     public function getBlockParsers()
     {
         return array(
@@ -17,25 +22,31 @@ class MarkuaExtension extends CommonMarkCoreExtension {
             new BlockParser\BlockQuoteParser(),
             new MarkuaBlockParser\AsideParser(),
             new MarkuaBlockParser\IconBlockParser(),
-            new BlockParser\ATXHeaderParser(),
+            new BlockParser\ATXHeadingParser(),
             new BlockParser\FencedCodeParser(),
             new BlockParser\HtmlBlockParser(),
-            new BlockParser\SetExtHeaderParser(),
-            new BlockParser\HorizontalRuleParser(),
+            new BlockParser\SetExtHeadingParser(),
+            new BlockParser\ThematicBreakParser(),
             new BlockParser\ListParser(),
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getBlockRenderers()
     {
         $renderers = parent::getBlockRenderers();
-        $renderers['League\Markua\Block\Element\Aside'] = new MarkuaBlockRenderer\AsideRenderer();
-        $renderers['League\Markua\Block\Element\IconBlock'] = new MarkuaBlockRenderer\IconBlockRenderer();
-
+        $renderers['League\Markua\Block\Element\Aside'] = new AsideRenderer();
+        $renderers['League\Markua\Block\Element\IconBlock'] = new IconBlockRenderer();
         return $renderers;
     }
-    
-    public function getName() {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
         return 'markua';
     }
 }

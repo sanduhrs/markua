@@ -23,11 +23,7 @@ use League\CommonMark\Cursor;
 class Aside extends AbstractBlock
 {
     /**
-     * Returns true if this block can contain the given block as a child node
-     *
-     * @param AbstractBlock $block
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canContain(AbstractBlock $block)
     {
@@ -35,9 +31,7 @@ class Aside extends AbstractBlock
     }
 
     /**
-     * Returns true if block type can accept lines of text
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function acceptsLines()
     {
@@ -45,19 +39,20 @@ class Aside extends AbstractBlock
     }
 
     /**
-     * Whether this is a code block
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isCode()
     {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function matchesNextLine(Cursor $cursor)
     {
-        if ($cursor->getIndent() <= 3 && $cursor->getFirstNonSpaceCharacter() == 'A') {
-            $cursor->advanceToFirstNonSpace();
+        if ($cursor->getIndent() <= 3 && $cursor->getNextNonSpaceCharacter() == 'A') {
+            $cursor->advanceToNextNonSpaceOrNewline();
             if ($cursor->peek() === '>') {
                 $cursor->advanceBy(2);
                 if ($cursor->getCharacter() === ' ') {
@@ -71,8 +66,7 @@ class Aside extends AbstractBlock
     }
 
     /**
-     * @param ContextInterface $context
-     * @param Cursor           $cursor
+     * {@inheritdoc}
      */
     public function handleRemainingContents(ContextInterface $context, Cursor $cursor)
     {
@@ -81,20 +75,15 @@ class Aside extends AbstractBlock
         }
 
         $context->addBlock(new Paragraph());
-        $cursor->advanceToFirstNonSpace();
+        $cursor->advanceToNextNonSpaceOrNewline();
         $context->getTip()->addLine($cursor->getRemainder());
     }
 
     /**
-     * @param Cursor $cursor
-     * @param int $currentLineNumber
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setLastLineBlank(Cursor $cursor, $currentLineNumber)
+    public function setLastLineBlank($blank)
     {
-        parent::setLastLineBlank($cursor, $currentLineNumber);
-
         $this->lastLineBlank = false;
     }
 }
